@@ -10,6 +10,9 @@ module.exports = {
     interventions: {
         type: new GraphQLList(type),
         args: {
+            id: {
+                type: GraphQLID
+            },
             author: {
                 type: GraphQLString
             },

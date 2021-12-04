@@ -1,7 +1,7 @@
-const DAO = require('../../lib/dao')
+const ALLO = require('../../lib/allo')
 const mySQLWrapper = require('../../lib/mysqlWrapper')
 
-class Intervention extends DAO {
+class Intervention extends ALLO {
 
     /**
      * Overrides TABLE_NAME with this class' backing table at MySQL
@@ -25,7 +25,6 @@ class Intervention extends DAO {
         // Returns early with all interventions if no criteria was passed
         if (Object.keys(fields).length === 0) return this.findAll()
         
-        // Find matching interventions
         return this.findByFields({
             fields
         })
@@ -58,28 +57,26 @@ class Intervention extends DAO {
         const connection = await mySQLWrapper.getConnectionFromPool()
         try {
             if (status == "InProgress") {
-                console.log("YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-                let start_date = Date.now().toString();
-                    await this.update(connection, {
-                        id,
-                        data: { 
-                            start_date,
-                            status
-                        }
-                    })
-
-                    return this.getByID(_, {id})
+                let start_date = new Date(Date.now())
+                await this.update(connection, {
+                    id,
+                    data: { 
+                        start_date,
+                        status
+                    }
+                })
+                return this.getByID(_, {id})
             }
             else if (status == "Completed") {
-                console.log("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+                let end_date = new Date(Date.now())
         
                 await this.update(connection, {
                     id,
                     data: {
+                        end_date,
                         status
                     }
                 })
-    
                 return this.getByID(_, {id})
             }
         } finally {
